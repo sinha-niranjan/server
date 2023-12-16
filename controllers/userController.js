@@ -1,6 +1,13 @@
 const { hashPassword, comparePassword } = require("../helpers/authHelper");
 const userModel = require("../models/userModel");
 const JWT = require("jsonwebtoken");
+const { expressjwt: jwt } = require("express-jwt");
+
+// middleware
+const requireSignIn = jwt({
+  secret: process.env.JWT_SECRET,
+  algorithms: ["HS256"],
+});
 
 const registerController = async (req, res) => {
   try {
@@ -147,7 +154,7 @@ const updateUser = async (req, res) => {
       { new: true }
     );
 
-    updatedUser.password = undefined
+    updatedUser.password = undefined;
 
     res.status(201).send({
       success: true,
@@ -164,4 +171,9 @@ const updateUser = async (req, res) => {
   }
 };
 
-module.exports = { registerController, loginController, updateUser };
+module.exports = {
+  requireSignIn,
+  registerController,
+  loginController,
+  updateUser,
+};
