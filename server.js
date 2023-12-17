@@ -20,10 +20,9 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-// ROUTES 
+// ROUTES
 app.use("/api/v1/auth", require("./routes/userRoutes"));
-
-
+app.use("/api/v1/post", require("./routes/postRoutes"));
 
 // PORT
 const PORT = process.env.PORT || 8080;
