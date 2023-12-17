@@ -1,4 +1,6 @@
-const postModel = require('../models/postModel')
+const postModel = require("../models/postModel");
+
+// create post
 
 const createPostController = async (req, res) => {
   try {
@@ -17,8 +19,7 @@ const createPostController = async (req, res) => {
       description,
       postedBy: req.auth._id,
     }).save();
-      
-    
+
     res.status(200).send({
       success: true,
       message: "post created Successfully",
@@ -35,4 +36,26 @@ const createPostController = async (req, res) => {
   }
 };
 
-module.exports = { createPostController };
+// GET ALL POSTS
+const getAllPostsController = async (req, res) => {
+  try {
+    const posts = await postModel
+      .find()
+      .populate("postedBy", "_id name")
+      .sort({ createdAt: -1 });
+    return res.status(200).send({
+      success: true,
+      message: "All posts data ",
+      posts,
+    });
+  } catch (error0) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in get all posts api ",
+      error,
+    });
+  }
+};
+
+module.exports = { createPostController, getAllPostsController };
