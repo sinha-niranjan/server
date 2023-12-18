@@ -1,3 +1,4 @@
+const { compareSync } = require("bcrypt");
 const postModel = require("../models/postModel");
 
 // create post
@@ -96,9 +97,53 @@ const deletePostController = async (req, res) => {
   }
 };
 
+// update post
+
+const updatePostController = async (req, res) => {
+  try {
+    const { title, description } = req.body;
+
+    // post find
+    const post = await postModel.findByIdAndUpdate({ _id: req.params.id });
+
+    //  validation
+
+    if (!title || !description) {
+      return res.status(500).send({
+        success: fale,
+        message: "Please provide post title and descrition",
+      });
+    }
+    const updatedPost = await postModel.findByIdAndUpdate(
+      {
+        _id: req.params.id,
+      },
+      {
+        title: title || post?.title,
+        description: description || post?.description,
+      },
+      { new: true }
+    );
+
+    res.status(200).send({
+      success: true,
+      message: "Post updated Successfully",
+      updatedPost,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in update post api",
+      error,
+    });
+  }
+};
+
 module.exports = {
   createPostController,
   getAllPostsController,
   getUserPostsController,
   deletePostController,
+  updatePostController,
 };
